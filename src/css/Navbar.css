@@ -1,0 +1,24 @@
+/* Full-width navbar */
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #222;
+    padding: 15px 30px;
+    box-sizing: border-box;
+  }
+  
+  /* Logout button styling */
+  .logout-button {
+    background-color: #ff4d4f;
+    border: none;
+    padding: 10px 16px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .logout-button:hover {
+    background-color: #ff7875;
+  }
+  
