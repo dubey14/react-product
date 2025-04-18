@@ -1,103 +1,83 @@
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 
-function change(currentState, action) {
-  console.log("Checking current state", currentState.count);
-  if (action === "increment") {
-    return { count: currentState.count + 1 };
-  } else if (action === "decrement") {
-    return { count: currentState.count - 1 };
-  }
-}
-
-function usernameReducer(currentUsername, action) {
+function userReducer(currentUser, action) {
   if (action.type === "setUserName") {
-    console.log("Inside username If", action.uname);
+    let updatedUser = currentUser;
+    currentUser.username = action.username;
+    return updatedUser;
+    /* return {
+      username: action.username,
+      isUserNameValid: currentUser.isUserNameValid,
+      password: currentUser.password,
+      isPasswordValid: currentUser.isPasswordValid,
+      usernameTouch: currentUser.usernameTouch,
+      passwordTouch: currentUser.passwordTouch,
+    }; */
+  } else if (action.type === "validateUsername") {
     return {
-      uname: action.uname,
-      isUnameValid: currentUsername.isUnameValid,
+      username: currentUser.username,
+      isUserNameValid: action.username.length > 0 ? true : false,
+      password: currentUser.password,
+      isPasswordValid: currentUser.isPasswordValid,
+      usernameTouch: true,
+      passwordTouch: currentUser.passwordTouch,
     };
-  } else if (action.type === "validateValue") {
-    console.log("Inside else if");
+  } else if (action.type === "setPassword") {
     return {
-      uname: currentUsername.uname,
-      isUnameValid: action.uname.length > 0 ? true : false,
-    };
-  }
-}
-
-function passwordReducer(currentPassword, action) {
-  if (action.type === "setPassword") {
-    console.log("Inside password If", action.pword);
-    return {
-      pword: action.pword,
-      isPwordValid: currentPassword.isPwordValid,
+      username: currentUser.username,
+      isUserNameValid: currentUser.isUserNameValid,
+      password: action.password,
+      isPasswordValid: currentUser.isPasswordValid,
+      usernameTouch: currentUser.usernameTouch,
+      passwordTouch: currentUser.passwordTouch,
     };
   } else if (action.type === "validatePassword") {
-    console.log("Inside password reducer else if");
     return {
-      pword: currentPassword.pword,
-      isPwordValid: action.pword.length > 0 ? true : false,
+      username: currentUser.username,
+      isUserNameValid: currentUser.isUserNameValid,
+      password: currentUser.password,
+      isPasswordValid: action.password.length > 0 ? true : false,
+      usernameTouch: currentUser.usernameTouch,
+      passwordTouch: true,
     };
   }
 }
 
 function Increment() {
-  let [counter, setCounter] = useState(0);
-  let [complexCounter, send] = useReducer(change, { count: 10 });
-
-  let [username, dispatchUsername] = useReducer(usernameReducer, {
-    uname: "",
-    isUnameValid: false,
+  let [user, dispatchUser] = useReducer(userReducer, {
+    username: "",
+    isUserNameValid: false,
+    password: "",
+    isPasswordValid: false,
+    usernameTouch: false,
+    passwordTouch: false,
   });
-
-  let [password, dispatchPassword] = useReducer(passwordReducer, {
-    pword: "",
-    isPwordValid: false,
-  });
-
-  const addCounter = () => {
-    send("increment");
-  };
-
-  const subCounter = () => {
-    send("decrement");
-  };
 
   const formSubmit = (e) => {
     e.preventDefault();
-    console.log("Inside Form Submit Method", username.uname);
-    console.log("checking username", username.isUnameValid);
-    if (username.isUnameValid && password.isPwordValid) {
-      console.log("Login successful", username.uname, password.pword);
+    if (user.isUserNameValid && user.isPasswordValid) {
+      console.log("Login successful", user.username, user.password);
     }
   };
 
   const userNameChangeHandler = (value) => {
-    console.log("Username from username handler", value);
-    dispatchUsername({ uname: value, type: "setUserName" });
+    dispatchUser({ username: value, type: "setUserName" });
   };
 
   const userNameBlurHandler = (value) => {
-    console.log("From userNameBlurHandler");
-    dispatchUsername({ uname: value, type: "validateValue" });
+    dispatchUser({ username: value, type: "validateUsername" });
   };
 
   const passwordChangeHandler = (value) => {
-    console.log("Password from password handler", value);
-    dispatchPassword({ pword: value, type: "setPassword" });
+    dispatchUser({ password: value, type: "setPassword" });
   };
 
   const passwordBlurHandler = (value) => {
-    console.log("Password from passwordBlurHandler", value);
-    dispatchPassword({ pword: value, type: "validatePassword" });
+    dispatchUser({ password: value, type: "validatePassword" });
   };
 
   return (
     <>
-      <input type="button" value="-" onClick={subCounter} />
-      <span>{complexCounter.count}</span>
-      <input type="button" value="+" onClick={addCounter} />
-
       <form onSubmit={formSubmit}>
         <div>
           <input
@@ -107,6 +87,11 @@ function Increment() {
             onBlur={(e) => userNameBlurHandler(e.target.value)}
           />
         </div>
+        {!user.isUserNameValid && user.usernameTouch ? (
+          <div style={{ color: "red" }}>User name is not valid!</div>
+        ) : (
+          <></>
+        )}
         <div>
           <input
             type="text"
@@ -115,6 +100,11 @@ function Increment() {
             onBlur={(e) => passwordBlurHandler(e.target.value)}
           />
         </div>
+        {!user.isPasswordValid && user.passwordTouch ? (
+          <div style={{ color: "red" }}>Password is not valid!</div>
+        ) : (
+          <></>
+        )}
         <div>
           <input type="submit" value="Login" />
         </div>
