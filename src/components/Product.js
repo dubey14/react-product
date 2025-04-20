@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Product(props) {
   let initialAvailability =
     props.product.pquantity > 0 ? "Available" : "Not Available";
   let [quantity, setQuantity] = useState(Number(props.product.pquantity));
   let [availability, setavailability] = useState(initialAvailability);
+
+  const addToCart = () => {
+    if (quantity === 0) {
+      return;
+    }
+    console.log("Add to cart");
+    setQuantity((prev) => prev - 1);
+    props.setCartCount((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    if (quantity <= 0) {
+      setavailability("Not Available");
+    }
+  }, [quantity]);
 
   const addQuantity = () => {
     const incQuantity = quantity + 1;
@@ -54,6 +69,13 @@ function Product(props) {
             }}
           >
             {availability}
+          </span>
+          <span>
+            {availability === "Available" ? (
+              <button onClick={addToCart}>Add to Cart</button>
+            ) : (
+              <></>
+            )}
           </span>
         </div>
       </div>

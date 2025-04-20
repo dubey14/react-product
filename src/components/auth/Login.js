@@ -1,8 +1,7 @@
 import Products from "../Products";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, props } from "react";
 
-function Login() {
-  let [loggedIn, setLoggedIn] = useState(false);
+function Login(props) {
   let [username, setUserName] = useState("");
   let [password, setPassword] = useState("");
   let [isUsernameValid, setIsUsernameValid] = useState(false);
@@ -12,11 +11,8 @@ function Login() {
 
   const logIn = (e) => {
     e.preventDefault();
-
     if (isUsernameValid && isPasswordValid) {
-      let isLoggedIn = true;
-      setLoggedIn(isLoggedIn);
-      localStorage.setItem("auth", isLoggedIn);
+      props.manageLogin();
     }
   };
 
@@ -62,35 +58,31 @@ function Login() {
 
   return (
     <>
-      {loggedIn ? (
-        <Products setLoggedIn={setLoggedIn} />
-      ) : (
-        <form onSubmit={logIn}>
-          <div>
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              onBlur={() => setIsUsernameTouched(true)}
-              onChange={(e) => validateUsername(e.target.value)}
-            />
-          </div>
+      <form onSubmit={logIn}>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            onBlur={() => setIsUsernameTouched(true)}
+            onChange={(e) => validateUsername(e.target.value)}
+          />
+        </div>
 
-          <div>
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              onBlur={() => setIsPasswordTouched(true)}
-              onChange={(e) => validatePassword(e.target.value)}
-            />
-          </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            onBlur={() => setIsPasswordTouched(true)}
+            onChange={(e) => validatePassword(e.target.value)}
+          />
+        </div>
 
-          <div>
-            <input type="submit" value="Login" />
-          </div>
-        </form>
-      )}
+        <div>
+          <input type="submit" value="Login" />
+        </div>
+      </form>
       {!isUsernameValid && isUsernameTouched ? (
         <div style={{ color: "red" }}>Username Invalid!</div>
       ) : (

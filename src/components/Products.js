@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ManageProducts from "./ManageProducts";
 import Product from "./Product";
 import AddProduct from "./AddProduct";
 import Navbar from "./Navbar";
-import Login from "./auth/Login";
+import authContext from "../context/AuthContext";
 
 function Products(props) {
   let productArray = [
@@ -15,12 +15,17 @@ function Products(props) {
   let [filterValue, setfilterValue] = useState("select");
   let [products, setProducts] = useState(productArray);
   let [isFormShow, setisFormShow] = useState(false);
-  let [isLoggedIn, setIsLoggedIn] = useState(false);
+  let [cartCount, setCartCount] = useState(0);
 
-  useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("auth"));
-    console.log("use effect in product :", isLoggedIn);
-  }, []);
+  /* useEffect(() => {
+    let isLoggedIn = localStorage.getItem("auth");
+    if (!isLoggedIn) {
+      props.manageLogin();
+    }
+  }, []); */
+
+  //let x = useContext(authContext);
+  console.log("Context", useContext(authContext).isLoggedIn);
 
   const addProduct = (product) => {
     console.log("Data from Parent", product);
@@ -52,17 +57,20 @@ function Products(props) {
       } else if (filter === "unavailable") {
         return product.pquantity <= 0;
       } else {
-        return true; // return all products if no filter or invalid filter
+        return true;
       }
     });
     setfilteredProducts(filteredProducts);
   };
 
-  return !isLoggedIn ? (
-    <Login />
-  ) : (
+  return (
     <div style={{ background: "rgb(243 237 246)" }}>
-      <Navbar setLoggedIn={props.setLoggedIn} />
+      <Navbar
+        setLogout={props.manageLogin}
+        isLoggedIn={props.setLogin}
+        setLogin={props.manageLogout}
+        cartCount={cartCount}
+      />
       <h1
         style={{
           border: "2px solid Tomato",
@@ -82,7 +90,13 @@ function Products(props) {
       </div>
       <hr />
       {filteredProducts.map((product) => {
-        return <Product product={product} key={product.pid} />;
+        return (
+          <Product
+            product={product}
+            key={product.pid}
+            setCartCount={setCartCount}
+          />
+        );
       })}
     </div>
   );
