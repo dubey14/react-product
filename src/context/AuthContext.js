@@ -1,8 +1,5 @@
-import React from "react";
+import { createContext } from "react";
 
-let authContext = React.createContext({
-  isLoggedIn: false,
-  isLoggedOut: false,
-});
+let authContext = createContext();
 
 export default authContext;

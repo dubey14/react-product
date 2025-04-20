@@ -24,9 +24,6 @@ function Products(props) {
     }
   }, []); */
 
-  //let x = useContext(authContext);
-  console.log("Context", useContext(authContext).isLoggedIn);
-
   const addProduct = (product) => {
     console.log("Data from Parent", product);
     console.log("Data from Parent", product);

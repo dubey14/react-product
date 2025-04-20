@@ -7,11 +7,13 @@ import authContext from "./context/AuthContext";
 function App() {
   let [tLogin, setTLogin] = useState(localStorage.getItem("auth") === "true");
   let [showLoginForm, setLoginForm] = useState(false);
+  let [loggedInUser, setLoggedInUser] = useState();
 
   const loginManager = () => {
     setTLogin(true);
     localStorage.setItem("auth", true);
     setLoginForm(true);
+    setLoggedInUser("Akash");
   };
 
   const logoutManager = () => {
@@ -20,7 +22,7 @@ function App() {
   };
 
   return (
-    <authContext.Provider value={{ isLoggedIn: tLogin }}>
+    <authContext.Provider value={{ loggedInUser, setLoggedInUser }}>
       <Products
         manageLogin={logoutManager}
         setLogin={tLogin}
