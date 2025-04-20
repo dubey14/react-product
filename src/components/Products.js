@@ -29,6 +29,7 @@ function Products(props) {
 
   const addProduct = (product) => {
     console.log("Data from Parent", product);
+    console.log("Data from Parent", product);
     var updatedProducts = [product, ...products];
     setProducts(updatedProducts);
     updateProducts(updatedProducts, filterValue);
