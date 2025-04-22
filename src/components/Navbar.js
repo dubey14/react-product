@@ -16,6 +16,7 @@ function Navbar(props) {
 
   const switchProfile = () => {
     context.setLoggedInUser((prev) => (prev === "Vidhi" ? "Akash" : "Vidhi"));
+    localStorage.setItem("userLoggedIn", context.loggedInUser);
   };
 
   return (

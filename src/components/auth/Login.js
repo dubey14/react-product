@@ -1,60 +1,41 @@
-import Products from "../Products";
-import { use, useEffect, useState, props } from "react";
+import { useRef, useState } from "react";
 
 function Login(props) {
   let [username, setUserName] = useState("");
   let [password, setPassword] = useState("");
-  let [isUsernameValid, setIsUsernameValid] = useState(false);
-  let [isPasswordValid, setIsPasswordValid] = useState(false);
-  let [isUsernameTouched, setIsUsernameTouched] = useState(false);
-  let [isPasswordTouched, setIsPasswordTouched] = useState(false);
+  let [isUsernameValid, setIsUsernameValid] = useState();
+  let [isPasswordValid, setIsPasswordValid] = useState();
+  let [loginButtonClicked, setLoginButtonClicked] = useState(false);
+
+  let usernameRef = useRef();
+  let passwordRef = useRef();
 
   const logIn = (e) => {
     e.preventDefault();
+    setLoginButtonClicked(true);
+    if (username.includes("@")) {
+      setIsUsernameValid(true);
+      console.log("username After validation", username);
+    } else {
+      console.log("username Validation failed");
+    }
+    if (password.length > 8) {
+      setIsPasswordValid(true);
+      console.log("Password after validation :", password);
+    } else {
+      console.log("Password validation failed");
+    }
+    if (!isUsernameValid) {
+      console.log("Username Invalid ", usernameRef);
+      usernameRef.current.focus();
+    } else if (!isPasswordValid) {
+      console.log("Password Invalid ", passwordRef);
+      passwordRef.current.focus();
+    }
     if (isUsernameValid && isPasswordValid) {
       props.manageLogin();
     }
   };
-
-  const validateUsername = (value) => {
-    setUserName(value);
-    console.log("Username before validation", value);
-  };
-
-  useEffect(() => {
-    let timeOut = setTimeout(() => {
-      if (username.includes("@")) {
-        setIsUsernameValid(true);
-        console.log("username After validation", username);
-      } else {
-        console.log("username Validation failed");
-      }
-    }, 1000);
-    console.log("Time out by setTimeOut", timeOut);
-    return () => {
-      console.log("Clear timeout : ", timeOut);
-      clearTimeout(timeOut);
-    };
-  }, [username]);
-
-  const validatePassword = (value) => {
-    setPassword(value);
-    console.log("Password before validation:", value);
-  };
-
-  useEffect(() => {
-    let timeOut = setTimeout(() => {
-      if (password.length > 8) {
-        setIsPasswordValid(true);
-        console.log("Password after validation :", password);
-      } else {
-        console.log("Password validation failed");
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, [password]);
 
   return (
     <>
@@ -64,9 +45,14 @@ function Login(props) {
           <input
             type="text"
             id="username"
-            onBlur={() => setIsUsernameTouched(true)}
-            onChange={(e) => validateUsername(e.target.value)}
+            onChange={(e) => setUserName(e.target.value)}
+            ref={usernameRef}
           />
+          {!isUsernameValid && loginButtonClicked ? (
+            <div style={{ color: "red" }}>Username Invalid!</div>
+          ) : (
+            <> </>
+          )}
         </div>
 
         <div>
@@ -74,25 +60,20 @@ function Login(props) {
           <input
             type="password"
             id="password"
-            onBlur={() => setIsPasswordTouched(true)}
-            onChange={(e) => validatePassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            ref={passwordRef}
           />
+          {!isPasswordValid && loginButtonClicked ? (
+            <div style={{ color: "red" }}>Password Invalid!</div>
+          ) : (
+            <> </>
+          )}
         </div>
 
         <div>
           <input type="submit" value="Login" />
         </div>
       </form>
-      {!isUsernameValid && isUsernameTouched ? (
-        <div style={{ color: "red" }}>Username Invalid!</div>
-      ) : (
-        <> </>
-      )}
-      {!isPasswordValid && isPasswordTouched ? (
-        <div style={{ color: "red" }}>Password Invalid!</div>
-      ) : (
-        <> </>
-      )}
     </>
   );
 }
